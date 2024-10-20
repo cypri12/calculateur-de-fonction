@@ -96,4 +96,59 @@ def jeu():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT and direction != 'RIGHT':
                     x1_changement = -taille_serpent
-                    y1_changement
+                    y1_changement = 0
+                    direction = 'LEFT'
+                elif event.key == pygame.K_RIGHT and direction != 'LEFT':
+                    x1_changement = taille_serpent
+                    y1_changement = 0
+                    direction = 'RIGHT'
+                elif event.key == pygame.K_UP and direction != 'DOWN':
+                    y1_changement = -taille_serpent
+                    x1_changement = 0
+                    direction = 'UP'
+                elif event.key == pygame.K_DOWN and direction != 'UP':
+                    y1_changement = taille_serpent
+                    x1_changement = 0
+                    direction = 'DOWN'
+
+        if x1 >= largeur_ecran or x1 < 0 or y1 >= hauteur_ecran or y1 < 0:
+            game_close = True
+        x1 += x1_changement
+        y1 += y1_changement
+        ecran.fill(bleu)
+
+        draw_grid()
+
+        ecran.blit(img_pomme, (nourriturex, nourriturey))
+        tete_serpent = [x1, y1]
+        liste_serpent.append(tete_serpent)
+        if len(liste_serpent) > longueur_serpent:
+            del liste_serpent[0]
+
+        for bloc dans liste_serpent[:-1]:
+            if bloc == tete_serpent:
+                game_close = True
+
+        for x, y in liste_serpent:
+            ecran.blit(img_segment, (x, y))
+
+        # Affichage du score
+        score_text = font_score.render(f"Score: {score}", True, blanc)
+        ecran.blit(score_text, (10, 10))
+
+        pygame.display.update()
+
+        if check_collision_pomme(x1, y1, nourriturex, nourriturey, taille_pomme):
+            score += 10
+            nourriturex = random.randint(taille_serpent, largeur_ecran - taille_serpent)
+            nourriturey = random.randint(taille_serpent, hauteur_ecran - taille_serpent)
+            nourriturex = round(nourriturex / taille_serpent) * taille_serpent
+            nourriturey = round(nourriturey / taille_serpent) * taille_serpent
+            longueur_serpent += 1
+
+        horloge.tick(vitesse_serpent)
+
+    pygame.quit()
+    quit()
+
+jeu()
