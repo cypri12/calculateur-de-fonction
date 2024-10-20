@@ -26,19 +26,26 @@
     </style>
 </head>
 <body>
-    <h1>Jeu Snake</h1>
-    <canvas id="snakeGame" width="400" height="400"></canvas>
+    <h1 id="title">Jeu Snake</h1>
+    <canvas id="snakeGame" width="800" height="600"></canvas> <!-- Augmentation de la taille de la surface du jeu -->
 
     <script>
         const canvas = document.getElementById("snakeGame");
         const ctx = canvas.getContext("2d");
 
+        // Demande le nom de l'utilisateur
+        let playerName = prompt("Entrez votre nom pour commencer à jouer :");
+        if (!playerName) {
+            playerName = "Joueur";
+        }
+        document.getElementById("title").textContent = `Jeu Snake - Joueur : ${playerName}`;
+
         const box = 20;
         let snake = [{ x: 9 * box, y: 10 * box }];
         let direction = "RIGHT";
         let food = {
-            x: Math.floor(Math.random() * 19 + 1) * box,
-            y: Math.floor(Math.random() * 19 + 1) * box
+            x: Math.floor(Math.random() * (canvas.width / box)) * box,
+            y: Math.floor(Math.random() * (canvas.height / box)) * box
         };
         let score = 0;
 
@@ -76,11 +83,12 @@
             if (direction === "LEFT") snakeX -= box;
             if (direction === "RIGHT") snakeX += box;
 
+            // Détection de la collision avec la nourriture
             if (snakeX === food.x && snakeY === food.y) {
                 score++;
                 food = {
-                    x: Math.floor(Math.random() * 19 + 1) * box,
-                    y: Math.floor(Math.random() * 19 + 1) * box
+                    x: Math.floor(Math.random() * (canvas.width / box)) * box,
+                    y: Math.floor(Math.random() * (canvas.height / box)) * box
                 };
             } else {
                 snake.pop();
@@ -88,9 +96,11 @@
 
             let newHead = { x: snakeX, y: snakeY };
 
+            // Détection de la collision avec les bords ou avec le corps
             if (snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
                 clearInterval(game);
-                alert("Game Over! Score: " + score);
+                alert(`${playerName}, vous avez perdu ! Score: ${score}`);
+                return;
             }
 
             snake.unshift(newHead);
