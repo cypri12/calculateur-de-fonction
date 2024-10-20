@@ -3,7 +3,7 @@ import subprocess
 
 app = Flask(__name__)
 
-# La page HTML en tant que chaîne de caractères
+# Le HTML en tant que chaîne de caractères dans le fichier server.py
 html_code = '''
 <!DOCTYPE html>
 <html lang="fr">
@@ -22,7 +22,7 @@ html_code = '''
 <body>
     <h1>Jeu Snake</h1>
     <button onclick="lancerSnake()">Lancer le jeu Snake</button>
-    <div id="resultat"></div>
+    <div id="resultat"></div>  <!-- Affichera le message de confirmation -->
 </body>
 </html>
 '''
@@ -33,7 +33,7 @@ def index():
 
 @app.route('/run-snake')
 def run_snake():
-    # Exécuter le script snake.py dans un nouveau processus
+    # Exécuter le script snake.py
     subprocess.Popen(['python', 'snake.py'])
     return "Le jeu Snake est lancé !"
 
