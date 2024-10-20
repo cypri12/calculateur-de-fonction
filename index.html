@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pac-Man</title>
+    <title>Lancer Snake</title>
     <script>
-        function afficherMessage() {
-            alert("Bonjour, Louis !");
+        function lancerSnake() {
+            fetch('/run-snake')  // Envoie une requête pour exécuter snake.py
+                .then(response => response.text())
+                .then(data => document.getElementById('resultat').innerHTML = data);
         }
     </script>
 </head>
 <body>
-    <h1>Je m'appelle Louis</h1>
-    <button onclick="afficherMessage()">Clique ici</button>
+    <h1>Jeu Snake</h1>
+    <button onclick="lancerSnake()">Lancer le jeu Snake</button>
+    <div id="resultat"></div>  <!-- Affichera le message de confirmation -->
 </body>
 </html>
