@@ -6,7 +6,7 @@
     <title>Lancer Snake</title>
     <script>
         function lancerSnake() {
-            fetch('/run-snake')  // Envoie une requête pour exécuter snake.py
+            fetch('/run-snake')
                 .then(response => response.text())
                 .then(data => document.getElementById('resultat').innerHTML = data);
         }
