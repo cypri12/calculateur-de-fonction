@@ -27,13 +27,13 @@
 </head>
 <body>
     <h1 id="title">Jeu Snake</h1>
-    <canvas id="snakeGame" width="800" height="600"></canvas> <!-- Augmentation de la taille de la surface du jeu -->
+    <canvas id="snakeGame" width="800" height="600"></canvas>
 
     <script>
         const canvas = document.getElementById("snakeGame");
         const ctx = canvas.getContext("2d");
 
-        // Demande le nom de l'utilisateur
+        // Demander le nom de l'utilisateur
         let playerName = prompt("Entrez votre nom pour commencer à jouer :");
         if (!playerName) {
             playerName = "Joueur";
@@ -83,7 +83,7 @@
             if (direction === "LEFT") snakeX -= box;
             if (direction === "RIGHT") snakeX += box;
 
-            // Détection de la collision avec la nourriture
+            // Détecter la collision avec la nourriture
             if (snakeX === food.x && snakeY === food.y) {
                 score++;
                 food = {
@@ -96,7 +96,7 @@
 
             let newHead = { x: snakeX, y: snakeY };
 
-            // Détection de la collision avec les bords ou avec le corps
+            // Détecter la collision avec les bords ou le corps du serpent
             if (snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
                 clearInterval(game);
                 alert(`${playerName}, vous avez perdu ! Score: ${score}`);
@@ -105,6 +105,7 @@
 
             snake.unshift(newHead);
 
+            // Afficher le score
             ctx.fillStyle = "#fff";
             ctx.font = "20px Arial";
             ctx.fillText("Score: " + score, 10, canvas.height - 10);
