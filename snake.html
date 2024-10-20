@@ -22,16 +22,25 @@
             position: absolute;
             top: 20px;
             font-size: 24px;
+            color: white;
         }
     </style>
 </head>
 <body>
     <h1 id="title">Jeu Snake</h1>
-    <canvas id="snakeGame" width="800" height="600"></canvas>
+    <canvas id="snakeGame"></canvas>
 
     <script>
         const canvas = document.getElementById("snakeGame");
         const ctx = canvas.getContext("2d");
+
+        // Adapter la taille du canvas à la taille de la fenêtre
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
         // Demander le nom de l'utilisateur
         let playerName = prompt("Entrez votre nom pour commencer à jouer :");
@@ -40,7 +49,7 @@
         }
         document.getElementById("title").textContent = `Jeu Snake - Joueur : ${playerName}`;
 
-        const box = 20;
+        const box = Math.min(canvas.width, canvas.height) / 40;  // La taille de la case s'ajuste à l'écran
         let snake = [{ x: 9 * box, y: 10 * box }];
         let direction = "RIGHT";
         let food = {
@@ -83,7 +92,7 @@
             if (direction === "LEFT") snakeX -= box;
             if (direction === "RIGHT") snakeX += box;
 
-            // Détecter la collision avec la nourriture
+            // Détection de la collision avec la nourriture
             if (snakeX === food.x && snakeY === food.y) {
                 score++;
                 food = {
@@ -96,7 +105,7 @@
 
             let newHead = { x: snakeX, y: snakeY };
 
-            // Détecter la collision avec les bords ou le corps du serpent
+            // Détection de la collision avec les bords ou le corps
             if (snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
                 clearInterval(game);
                 alert(`${playerName}, vous avez perdu ! Score: ${score}`);
@@ -105,7 +114,6 @@
 
             snake.unshift(newHead);
 
-            // Afficher le score
             ctx.fillStyle = "#fff";
             ctx.font = "20px Arial";
             ctx.fillText("Score: " + score, 10, canvas.height - 10);
