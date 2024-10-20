@@ -3,18 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lancer Snake</title>
-    <script>
-        function lancerSnake() {
-            fetch('/run-snake')
-                .then(response => response.text())
-                .then(data => document.getElementById('resultat').innerHTML = data);
-        }
-    </script>
+    <title>Accueil du Jeu Snake</title>
 </head>
 <body>
-    <h1>Jeu Snake</h1>
-    <button onclick="lancerSnake()">Lancer le jeu Snake</button>
-    <div id="resultat"></div>  <!-- Affichera le message de confirmation -->
+    <h1>Bienvenue sur le Jeu Snake</h1>
+    <p>Cliquez sur le bouton ci-dessous pour commencer à jouer :</p>
+    <button onclick="window.location.href='snake.html'">Lancer le Jeu Snake</button>
 </body>
 </html>
