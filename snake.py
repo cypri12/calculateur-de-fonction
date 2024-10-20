@@ -24,7 +24,7 @@ pygame.display.set_caption('Snake Game')
 horloge = pygame.time.Clock()
 
 # Charger les images
-img_snake = pygame.image.load('snake-graphics.png')
+img_snake = pygame.image.load('assets/snake-graphics.png')
 img_segment = pygame.Surface((taille_serpent, taille_serpent))  # Créer une surface pour le segment du serpent
 img_segment.fill((0, 255, 0))  # Remplir la surface de couleur verte
 img_pomme = img_snake.subsurface((0, 200, 80, 55)).convert_alpha()  # Découper la pomme
@@ -111,45 +111,4 @@ def jeu():
                     x1_changement = 0
                     direction = 'DOWN'
 
-        if x1 >= largeur_ecran or x1 < 0 or y1 >= hauteur_ecran or y1 < 0:
-            game_close = True
-        x1 += x1_changement
-        y1 += y1_changement
-        ecran.fill(bleu)
-
-        draw_grid()
-
-        ecran.blit(img_pomme, (nourriturex, nourriturey))
-        tete_serpent = [x1, y1]
-        liste_serpent.append(tete_serpent)
-        if len(liste_serpent) > longueur_serpent:
-            del liste_serpent[0]
-
-        for bloc in liste_serpent[:-1]:
-            if bloc == tete_serpent:
-                game_close = True
-
-        for x, y in liste_serpent:
-            ecran.blit(img_segment, (x, y))
-
-        # Affichage du score
-        score_text = font_score.render(f"Score: {score}", True, blanc)
-        ecran.blit(score_text, (10, 10))
-
-        pygame.display.update()
-
-        if check_collision_pomme(x1, y1, nourriturex, nourriturey, taille_pomme):
-            score += 10
-            nourriturex = random.randint(taille_serpent, largeur_ecran - taille_serpent)
-            nourriturey = random.randint(taille_serpent, hauteur_ecran - taille_serpent)
-            nourriturex = round(nourriturex / taille_serpent) * taille_serpent
-            nourriturey = round(nourriturey / taille_serpent) * taille_serpent
-            longueur_serpent += 1
-
-        horloge.tick(vitesse_serpent)
-
-    pygame.quit()
-    quit()
-
-jeu()
-q
+        if x1 >= largeur_ecran or x1 <
