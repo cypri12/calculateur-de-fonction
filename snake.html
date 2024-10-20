@@ -34,10 +34,24 @@
         const canvas = document.getElementById("snakeGame");
         const ctx = canvas.getContext("2d");
 
-        // Adapter la taille du canvas à la taille de la fenêtre
+        // Fixer la taille initiale
+        const gameWidth = 800;
+        const gameHeight = 600;
+
+        // Adapter le canvas à l'écran tout en maintenant le ratio 4:3
         function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            let ratio = gameWidth / gameHeight;
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+
+            if (width / height > ratio) {
+                width = height * ratio;
+            } else {
+                height = width / ratio;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
         }
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
@@ -49,12 +63,12 @@
         }
         document.getElementById("title").textContent = `Jeu Snake - Joueur : ${playerName}`;
 
-        const box = Math.min(canvas.width, canvas.height) / 40;  // La taille de la case s'ajuste à l'écran
+        const box = 20;  // Taille des cases
         let snake = [{ x: 9 * box, y: 10 * box }];
         let direction = "RIGHT";
         let food = {
-            x: Math.floor(Math.random() * (canvas.width / box)) * box,
-            y: Math.floor(Math.random() * (canvas.height / box)) * box
+            x: Math.floor(Math.random() * (gameWidth / box)) * box,
+            y: Math.floor(Math.random() * (gameHeight / box)) * box
         };
         let score = 0;
 
@@ -73,14 +87,24 @@
         }
 
         function draw() {
-            ctx.fillStyle = "#000";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            let scaleX = canvas.width / gameWidth;
+            let scaleY = canvas.height / gameHeight;
+
+            ctx.scale(scaleX, scaleY);
+
+            // Dessiner le fond du canvas
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, gameWidth, gameHeight);
+
+            // Dessiner le serpent
             for (let i = 0; i < snake.length; i++) {
                 ctx.fillStyle = i === 0 ? "#00ff00" : "#ffffff";
                 ctx.fillRect(snake[i].x, snake[i].y, box, box);
             }
 
+            // Dessiner la nourriture
             ctx.fillStyle = "#ff0000";
             ctx.fillRect(food.x, food.y, box, box);
 
@@ -96,8 +120,8 @@
             if (snakeX === food.x && snakeY === food.y) {
                 score++;
                 food = {
-                    x: Math.floor(Math.random() * (canvas.width / box)) * box,
-                    y: Math.floor(Math.random() * (canvas.height / box)) * box
+                    x: Math.floor(Math.random() * (gameWidth / box)) * box,
+                    y: Math.floor(Math.random() * (gameHeight / box)) * box
                 };
             } else {
                 snake.pop();
@@ -106,7 +130,7 @@
             let newHead = { x: snakeX, y: snakeY };
 
             // Détection de la collision avec les bords ou le corps
-            if (snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
+            if (snakeX < 0 || snakeX >= gameWidth || snakeY < 0 || snakeY >= gameHeight || collision(newHead, snake)) {
                 clearInterval(game);
                 alert(`${playerName}, vous avez perdu ! Score: ${score}`);
                 return;
@@ -114,9 +138,13 @@
 
             snake.unshift(newHead);
 
+            // Réinitialiser l'échelle pour ne pas affecter d'autres éléments
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+            // Afficher le score
             ctx.fillStyle = "#fff";
             ctx.font = "20px Arial";
-            ctx.fillText("Score: " + score, 10, canvas.height - 10);
+            ctx.fillText("Score: " + score, 10, gameHeight - 10);
         }
 
         function collision(head, snake) {
