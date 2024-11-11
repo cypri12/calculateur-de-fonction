@@ -1,21 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur</title>
+    <title>Calculateur de fonction</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body, html {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #e6ecf0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2em;
+            color: #333333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        label {
+            font-size: 1.1em;
+            color: #666666;
+            margin-top: 15px;
+            display: block;
+            font-weight: 500;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+        p#result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333333;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
-    <h1>Calculateur</h1>
-    <label for="x">À quoi est égale x ? </label>
-    <input type="number" id="x" step="any"><br><br>
+    <div class="container">
+        <h1>Calculateur de fonction</h1>
+        <label for="x">Entrez la valeur de x :</label>
+        <input type="number" id="x" step="any" placeholder="Entrez une valeur pour x">
 
-    <label for="operation">Quelle opération souhaitez-vous effectuer avec x ? (par exemple : '4/x', '2*x', 'x+10')</label>
-    <input type="text" id="operation"><br><br>
+        <label for="operation">Opération à effectuer :</label>
+        <input type="text" id="operation" placeholder="Exemple : 4/x, 2*x, x+10">
 
-    <button onclick="calculate()">Calculer</button>
+        <button onclick="calculate()">Calculer</button>
 
-    <p id="result"></p>
+        <p id="result"></p>
+    </div>
 
     <script>
         function calculate() {
@@ -23,7 +97,7 @@
             let operation = document.getElementById("operation").value;
 
             try {
-                let result = eval(operation.replace(/x/g, x)); // Remplace 'x' par la valeur de l'utilisateur
+                let result = eval(operation.replace(/x/g, x));
                 document.getElementById("result").innerText = `Le résultat de l'opération ${operation} est : ${result}`;
             } catch (error) {
                 if (error instanceof SyntaxError) {
