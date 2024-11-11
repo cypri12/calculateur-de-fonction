@@ -1,45 +1,38 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil du Jeu Snake</title>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            text-align: center;
-        }
-        h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <title>Calculateur</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Bienvenue sur le Jeu Snake</h1>
-        <p>Cliquez sur le bouton ci-dessous pour commencer à jouer :</p>
-        <button onclick="window.location.href='snake.html'">Lancer le Jeu Snake</button>
-    </div>
+    <h1>Calculateur</h1>
+    <label for="x">À quoi est égale x ? </label>
+    <input type="number" id="x" step="any"><br><br>
+
+    <label for="operation">Quelle opération souhaitez-vous effectuer avec x ? (par exemple : '4/x', '2*x', 'x+10')</label>
+    <input type="text" id="operation"><br><br>
+
+    <button onclick="calculate()">Calculer</button>
+
+    <p id="result"></p>
+
+    <script>
+        function calculate() {
+            let x = parseFloat(document.getElementById("x").value);
+            let operation = document.getElementById("operation").value;
+
+            try {
+                let result = eval(operation.replace(/x/g, x)); // Remplace 'x' par la valeur de l'utilisateur
+                document.getElementById("result").innerText = `Le résultat de l'opération ${operation} est : ${result}`;
+            } catch (error) {
+                if (error instanceof SyntaxError) {
+                    document.getElementById("result").innerText = "Erreur : opération non valide.";
+                } else {
+                    document.getElementById("result").innerText = "Erreur inconnue.";
+                }
+            }
+        }
+    </script>
 </body>
 </html>
