@@ -196,11 +196,10 @@
 
         function downloadChart() {
             const canvas = document.getElementById('chart');
-            const url = canvas.toDataURL('image/png');
             const link = document.createElement('a');
-            link.href = url;
-            link.download = 'graphique.png';
-            link.click();
+            link.href = canvas.toDataURL('image/png'); // Convertit le canvas en image PNG
+            link.download = 'graphique.png'; // Définit le nom du fichier
+            link.click(); // Déclenche le téléchargement
         }
     </script>
 </body>
