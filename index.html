@@ -158,11 +158,14 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true, // Maintient l'aspect du graphique
-                    aspectRatio: 2, // Change ici le ratio d'aspect pour le rendre moins allongé
+                    maintainAspectRatio: true,
+                    aspectRatio: 2, // Définit un ratio d’aspect modéré
                     scales: {
                         x: { title: { display: true, text: 'x' } },
                         y: { title: { display: true, text: 'y' } }
+                    },
+                    plugins: {
+                        legend: { display: false } // Masque la légende pour optimiser l’espace
                     }
                 }
             });
