@@ -5,9 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculateur de fonction</title>
     <style>
-        /* Votre style existant */
+        /* Style global */
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body, html {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 2.2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        label {
+            font-size: 1.1em;
+            color: #555;
+            margin-top: 15px;
+            display: block;
+            font-weight: 500;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus, input[type="text"]:focus {
+            border-color: #66a6ff;
+            outline: none;
+        }
+        button {
+            background: linear-gradient(135deg, #66a6ff, #89f7fe);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        #chart-container {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
     </style>
-    <!-- Importation de Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -20,61 +91,92 @@
         <input type="text" id="operation" placeholder="Exemple : 4/x, 2*x, x+10">
 
         <button onclick="calculate()">Calculer</button>
-
         <p id="result"></p>
-        <!-- Canvas pour le graphique -->
-        <canvas id="chart" width="400" height="400"></canvas>
+
+        <!-- Conteneur pour le graphique et bouton de téléchargement -->
+        <div id="chart-container">
+            <canvas id="chart" width="400" height="400"></canvas>
+            <button onclick="downloadChart()">Télécharger le graphique</button>
+        </div>
     </div>
 
-    <div class="small-footer-text">Adieu ct'equipe</div>
-
     <script>
+        let chartInstance;
+
         function calculate() {
             let x = parseFloat(document.getElementById("x").value);
             let operation = document.getElementById("operation").value;
 
             try {
-                // Calculer une valeur unique pour x
                 let result = eval(operation.replace(/x/g, x));
                 document.getElementById("result").innerText = `Le résultat de l'opération ${operation} est : ${result}`;
 
-                // Générer des données pour le graphique
-                let xValues = Array.from({length: 100}, (_, i) => i - 50); // x de -50 à 50
+                let xValues = Array.from({length: 100}, (_, i) => i - 50); 
                 let yValues = xValues.map(val => eval(operation.replace(/x/g, val)));
 
-                // Tracer le graphique
                 drawChart(xValues, yValues);
             } catch (error) {
-                if (error instanceof SyntaxError) {
-                    document.getElementById("result").innerText = "Erreur : opération non valide.";
-                } else {
-                    document.getElementById("result").innerText = "Erreur inconnue.";
-                }
+                document.getElementById("result").innerText = error instanceof SyntaxError ? 
+                    "Erreur : opération non valide." : "Erreur inconnue.";
             }
         }
 
         function drawChart(xValues, yValues) {
             const ctx = document.getElementById('chart').getContext('2d');
-            new Chart(ctx, {
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: xValues,
                     datasets: [{
                         label: 'y en fonction de x',
                         data: yValues,
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderColor: 'rgba(102, 166, 255, 1)',
                         borderWidth: 2,
-                        fill: false
+                        pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                        pointRadius: 3,
+                        fill: { target: 'origin', below: 'rgba(135, 206, 250, 0.1)' }
                     }]
                 },
                 options: {
                     responsive: true,
                     scales: {
-                        x: { title: { display: true, text: 'x' } },
-                        y: { title: { display: true, text: 'y' } }
+                        x: {
+                            title: { display: true, text: 'x' },
+                            grid: {
+                                drawOnChartArea: true,
+                                drawTicks: true,
+                                color: '#000000',
+                                lineWidth: 1,
+                                borderDash: [5, 5],
+                            }
+                        },
+                        y: {
+                            title: { display: true, text: 'y' },
+                            grid: {
+                                drawOnChartArea: true,
+                                drawTicks: true,
+                                color: '#000000',
+                                lineWidth: 1,
+                                borderDash: [5, 5],
+                            }
+                        }
                     }
                 }
             });
+        }
+
+        function downloadChart() {
+            const canvas = document.getElementById('chart');
+            const url = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'graphique.png';
+            link.click();
         }
     </script>
 </body>
