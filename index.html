@@ -136,30 +136,17 @@
             let x = parseFloat(document.getElementById("x").value);
             let operation = document.getElementById("operation").value;
 
-            if (isNaN(x) || !operation.trim()) {
-                document.getElementById("result").innerText = "Veuillez entrer une valeur pour x et une opération valide.";
-                return;
-            }
-
             try {
                 let result = eval(operation.replace(/x/g, x));
-                if (!isFinite(result)) throw new Error("Résultat infini ou non défini.");
-                
                 document.getElementById("result").innerText = `Le résultat de l'opération ${operation} est : ${result}`;
 
                 let xValues = Array.from({length: 100}, (_, i) => i - 50); 
-                let yValues = xValues.map(val => {
-                    let y = eval(operation.replace(/x/g, val));
-                    return isFinite(y) ? y : null; // Remplace les valeurs non définies ou infinies par null
-                });
-
-                // Filtrer les paires (x, y) pour enlever les points non définis
-                xValues = xValues.filter((_, i) => yValues[i] !== null);
-                yValues = yValues.filter(y => y !== null);
+                let yValues = xValues.map(val => eval(operation.replace(/x/g, val)));
 
                 drawChart(xValues, yValues);
             } catch (error) {
-                document.getElementById("result").innerText = "Erreur : opération non valide ou division par zéro.";
+                document.getElementById("result").innerText = error instanceof SyntaxError ? 
+                    "Erreur : opération non valide." : "Erreur inconnue.";
             }
         }
 
@@ -190,11 +177,23 @@
                     scales: {
                         x: {
                             title: { display: true, text: 'x' },
-                            grid: { drawOnChartArea: true, color: '#000000', lineWidth: 1, borderDash: [5, 5] }
+                            grid: {
+                                drawOnChartArea: true,
+                                drawTicks: true,
+                                color: '#000000',
+                                lineWidth: 1,
+                                borderDash: [5, 5],
+                            }
                         },
                         y: {
                             title: { display: true, text: 'y' },
-                            grid: { drawOnChartArea: true, color: '#000000', lineWidth: 1, borderDash: [5, 5] }
+                            grid: {
+                                drawOnChartArea: true,
+                                drawTicks: true,
+                                color: '#000000',
+                                lineWidth: 1,
+                                borderDash: [5, 5],
+                            }
                         }
                     }
                 }
@@ -203,10 +202,11 @@
 
         function downloadChart() {
             const canvas = document.getElementById('chart');
+            const url = canvas.toDataURL('image/png');
             const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png'); // Convertit le canvas en image PNG
-            link.download = 'graphique.png'; // Définit le nom du fichier
-            link.click(); // Déclenche le téléchargement
+            link.href = url;
+            link.download = 'graphique.png';
+            link.click();
         }
     </script>
 </body>
