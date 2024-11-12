@@ -148,7 +148,14 @@
                 document.getElementById("result").innerText = `Le résultat de l'opération ${operation} est : ${result}`;
 
                 let xValues = Array.from({length: 100}, (_, i) => i - 50); 
-                let yValues = xValues.map(val => eval(operation.replace(/x/g, val)));
+                let yValues = xValues.map(val => {
+                    let y = eval(operation.replace(/x/g, val));
+                    return isFinite(y) ? y : null; // Remplace les valeurs non définies ou infinies par null
+                });
+
+                // Filtrer les paires (x, y) pour enlever les points non définis
+                xValues = xValues.filter((_, i) => yValues[i] !== null);
+                yValues = yValues.filter(y => y !== null);
 
                 drawChart(xValues, yValues);
             } catch (error) {
@@ -183,11 +190,11 @@
                     scales: {
                         x: {
                             title: { display: true, text: 'x' },
-                            grid: { drawOnChartArea: true, drawTicks: true, color: '#000000', lineWidth: 1, borderDash: [5, 5] }
+                            grid: { drawOnChartArea: true, color: '#000000', lineWidth: 1, borderDash: [5, 5] }
                         },
                         y: {
                             title: { display: true, text: 'y' },
-                            grid: { drawOnChartArea: true, drawTicks: true, color: '#000000', lineWidth: 1, borderDash: [5, 5] }
+                            grid: { drawOnChartArea: true, color: '#000000', lineWidth: 1, borderDash: [5, 5] }
                         }
                     }
                 }
