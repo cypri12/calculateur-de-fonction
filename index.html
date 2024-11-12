@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur de fonction</title>
+    <title>Calculateur de Fonction</title>
     <style>
         /* Style global */
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -17,79 +17,111 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            background: linear-gradient(145deg, #d8e3f8, #f0f7ff);
+            padding: 20px;
+            color: #333;
         }
         /* Conteneur principal */
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.1), 0px 5px 15px rgba(0, 0, 0, 0.05);
             text-align: center;
             max-width: 500px;
             width: 100%;
+            animation: fadeIn 0.7s ease;
         }
         h1 {
             font-size: 2.2em;
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+            font-size: 1em;
         }
         label {
-            font-size: 1.1em;
+            font-size: 1em;
             color: #555;
-            margin-top: 15px;
-            display: block;
-            font-weight: 500;
+            font-weight: bold;
         }
         input[type="number"], input[type="text"] {
             width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            margin-bottom: 20px;
+            padding: 14px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1em;
-            transition: border-color 0.3s;
+            background-color: #f4f6f9;
+            transition: border-color 0.3s, background-color 0.3s;
         }
         input[type="number"]:focus, input[type="text"]:focus {
-            border-color: #66a6ff;
+            border-color: #007bff;
+            background-color: #e9f1ff;
             outline: none;
         }
         button {
-            background: linear-gradient(135deg, #66a6ff, #89f7fe);
+            background: linear-gradient(145deg, #007bff, #0056b3);
             color: white;
-            padding: 12px 25px;
+            padding: 14px 22px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 1em;
             font-weight: bold;
-            transition: background 0.3s, transform 0.2s;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0px 10px 15px rgba(0, 123, 255, 0.2);
         }
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(145deg, #0056b3, #003f80);
+            transform: translateY(-3px);
+        }
+        #result {
+            font-size: 1.1em;
+            color: #007bff;
+            margin-top: 20px;
         }
         #chart-container {
-            margin-top: 20px;
-            background: #f9f9f9;
+            margin-top: 30px;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            background: #f8faff;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.05);
             width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        }
+        .download-btn {
+            margin-top: 20px;
+            padding: 12px;
+            background: linear-gradient(145deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 0.95em;
+            box-shadow: 0px 8px 12px rgba(0, 123, 255, 0.2);
+        }
+        .download-btn:hover {
+            background: linear-gradient(145deg, #0056b3, #003f80);
+        }
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         /* Responsive style */
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.8em;
             }
-            label, input, button {
+            input, button, .download-btn {
                 font-size: 0.9em;
+                padding: 10px;
             }
         }
     </style>
@@ -97,20 +129,21 @@
 </head>
 <body>
     <div class="container">
-        <h1>Calculateur de fonction</h1>
-        <label for="x">Entrez la valeur de x :</label>
-        <input type="number" id="x" step="any" placeholder="Entrez une valeur pour x">
-
-        <label for="operation">Opération à effectuer :</label>
-        <input type="text" id="operation" placeholder="Exemple : 4/x, 2*x, x+10">
-
+        <h1>Calculateur de Fonction</h1>
+        <div class="input-group">
+            <label for="x">Entrez la valeur de x :</label>
+            <input type="number" id="x" step="any" placeholder="Exemple : 5">
+        </div>
+        <div class="input-group">
+            <label for="operation">Opération à effectuer :</label>
+            <input type="text" id="operation" placeholder="Exemple : 4/x, 2*x, x+10">
+        </div>
         <button onclick="calculate()">Calculer</button>
         <p id="result"></p>
 
-        <!-- Conteneur pour le graphique et bouton de téléchargement -->
         <div id="chart-container">
-            <canvas id="chart"></canvas>
-            <button onclick="downloadChart()">Télécharger le graphique</button>
+            <canvas id="chart" style="max-height: 300px;"></canvas>
+            <button class="download-btn" onclick="downloadChart()">Télécharger le graphique</button>
         </div>
     </div>
 
@@ -118,19 +151,24 @@
         let chartInstance;
 
         function calculate() {
-            let x = parseFloat(document.getElementById("x").value);
-            let operation = document.getElementById("operation").value;
+            const x = parseFloat(document.getElementById("x").value);
+            const operation = document.getElementById("operation").value;
+
+            if (isNaN(x) || !operation) {
+                document.getElementById("result").innerText = "Veuillez entrer une valeur pour x et une opération valide.";
+                return;
+            }
 
             try {
-                let result = eval(operation.replace(/x/g, x));
+                const result = eval(operation.replace(/x/g, x));
                 document.getElementById("result").innerText = `Le résultat de l'opération ${operation} est : ${result}`;
 
-                let xValues = Array.from({length: 100}, (_, i) => i - 50); 
-                let yValues = xValues.map(val => eval(operation.replace(/x/g, val)));
+                const xValues = Array.from({length: 100}, (_, i) => i - 50);
+                const yValues = xValues.map(val => eval(operation.replace(/x/g, val)));
 
                 drawChart(xValues, yValues);
             } catch (error) {
-                document.getElementById("result").innerText = error instanceof SyntaxError ? 
+                document.getElementById("result").innerText = error instanceof SyntaxError ?
                     "Erreur : opération non valide." : "Erreur inconnue.";
             }
         }
@@ -149,23 +187,20 @@
                     datasets: [{
                         label: 'y en fonction de x',
                         data: yValues,
-                        borderColor: 'rgba(102, 166, 255, 1)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
                         borderWidth: 2,
-                        pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+                        pointBackgroundColor: 'rgba(0, 123, 255, 0.6)',
                         pointRadius: 3,
-                        fill: { target: 'origin', below: 'rgba(135, 206, 250, 0.1)' }
+                        fill: { target: 'origin', below: 'rgba(0, 123, 255, 0.1)' }
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 2, // Définit un ratio d’aspect modéré
+                    aspectRatio: 2,
                     scales: {
                         x: { title: { display: true, text: 'x' } },
                         y: { title: { display: true, text: 'y' } }
-                    },
-                    plugins: {
-                        legend: { display: false } // Masque la légende pour optimiser l’espace
                     }
                 }
             });
