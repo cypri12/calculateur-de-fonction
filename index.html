@@ -78,6 +78,19 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Responsive style */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            label, input, button {
+                font-size: 0.9em;
+            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -96,7 +109,7 @@
 
         <!-- Conteneur pour le graphique et bouton de téléchargement -->
         <div id="chart-container">
-            <canvas id="chart" width="400" height="400"></canvas>
+            <canvas id="chart"></canvas>
             <button onclick="downloadChart()">Télécharger le graphique</button>
         </div>
     </div>
@@ -145,6 +158,8 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true, // Maintient l'aspect du graphique
+                    aspectRatio: 2, // Change ici le ratio d'aspect pour le rendre moins allongé
                     scales: {
                         x: { title: { display: true, text: 'x' } },
                         y: { title: { display: true, text: 'y' } }
