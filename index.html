@@ -18,34 +18,37 @@
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, #89f7fe, #66a6ff);
+            padding: 20px;
         }
         .container {
             background: white;
-            padding: 30px;
+            padding: 2em;
             border-radius: 15px;
             box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
             text-align: center;
-            max-width: 500px;
+            max-width: 90vw;
             width: 100%;
+            max-width: 500px;
+            margin: auto;
         }
         h1 {
-            font-size: 2.2em;
+            font-size: 2em;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 1em;
             font-weight: bold;
         }
         label {
             font-size: 1.1em;
             color: #555;
-            margin-top: 15px;
+            margin-top: 1em;
             display: block;
             font-weight: 500;
         }
         input[type="number"], input[type="text"] {
             width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            margin-bottom: 20px;
+            padding: 0.8em;
+            margin-top: 0.5em;
+            margin-bottom: 1em;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 1em;
@@ -58,7 +61,7 @@
         button {
             background: linear-gradient(135deg, #66a6ff, #89f7fe);
             color: white;
-            padding: 12px 25px;
+            padding: 0.8em 2em;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -66,17 +69,44 @@
             font-weight: bold;
             transition: background 0.3s, transform 0.2s;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 1em;
         }
         button:hover {
             transform: translateY(-2px);
             box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
         }
         #chart-container {
-            margin-top: 20px;
+            margin-top: 1em;
             background: #f9f9f9;
-            padding: 20px;
+            padding: 1em;
             border-radius: 10px;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        /* Adaptation pour les petits écrans */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .container {
+                padding: 1.5em;
+            }
+            button {
+                padding: 0.6em 1.5em;
+                font-size: 0.9em;
+            }
+            #chart-container {
+                padding: 1em;
+            }
+        }
+        /* Taille responsive du canvas */
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 400px;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -93,9 +123,8 @@
         <button onclick="calculate()">Calculer</button>
         <p id="result"></p>
 
-        <!-- Conteneur pour le graphique et bouton de téléchargement -->
         <div id="chart-container">
-            <canvas id="chart" width="400" height="400"></canvas>
+            <canvas id="chart"></canvas>
             <button onclick="downloadChart()">Télécharger le graphique</button>
         </div>
     </div>
@@ -107,8 +136,15 @@
             let x = parseFloat(document.getElementById("x").value);
             let operation = document.getElementById("operation").value;
 
+            if (isNaN(x) || !operation.trim()) {
+                document.getElementById("result").innerText = "Veuillez entrer une valeur pour x et une opération valide.";
+                return;
+            }
+
             try {
                 let result = eval(operation.replace(/x/g, x));
+                if (!isFinite(result)) throw new Error("Résultat infini ou non défini.");
+                
                 document.getElementById("result").innerText = `Le résultat de l'opération ${operation} est : ${result}`;
 
                 let xValues = Array.from({length: 100}, (_, i) => i - 50); 
@@ -116,8 +152,7 @@
 
                 drawChart(xValues, yValues);
             } catch (error) {
-                document.getElementById("result").innerText = error instanceof SyntaxError ? 
-                    "Erreur : opération non valide." : "Erreur inconnue.";
+                document.getElementById("result").innerText = "Erreur : opération non valide ou division par zéro.";
             }
         }
 
@@ -144,26 +179,15 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         x: {
                             title: { display: true, text: 'x' },
-                            grid: {
-                                drawOnChartArea: true,
-                                drawTicks: true,
-                                color: '#000000',
-                                lineWidth: 1,
-                                borderDash: [5, 5],
-                            }
+                            grid: { drawOnChartArea: true, drawTicks: true, color: '#000000', lineWidth: 1, borderDash: [5, 5] }
                         },
                         y: {
                             title: { display: true, text: 'y' },
-                            grid: {
-                                drawOnChartArea: true,
-                                drawTicks: true,
-                                color: '#000000',
-                                lineWidth: 1,
-                                borderDash: [5, 5],
-                            }
+                            grid: { drawOnChartArea: true, drawTicks: true, color: '#000000', lineWidth: 1, borderDash: [5, 5] }
                         }
                     }
                 }
