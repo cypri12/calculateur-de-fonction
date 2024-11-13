@@ -1,219 +1,26 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur de Fonction</title>
-    <style>
-        /* Style global */
-        * {
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        body, html {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(145deg, #d8e3f8, #f0f7ff);
-            padding: 20px;
-            color: #333;
-        }
-        /* Conteneur principal */
-        .container {
-            background: #ffffff;
-            padding: 35px;
-            border-radius: 20px;
-            box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.1), 0px 5px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-            animation: fadeIn 0.7s ease;
-        }
-        h1 {
-            font-size: 2.2em;
-            color: #007bff;
-            margin-bottom: 25px;
-        }
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 25px;
-            font-size: 1em;
-        }
-        label {
-            font-size: 1em;
-            color: #555;
-            font-weight: bold;
-        }
-        input[type="number"], input[type="text"] {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 1em;
-            background-color: #f4f6f9;
-            transition: border-color 0.3s, background-color 0.3s;
-        }
-        input[type="number"]:focus, input[type="text"]:focus {
-            border-color: #007bff;
-            background-color: #e9f1ff;
-            outline: none;
-        }
-        button {
-            background: linear-gradient(145deg, #007bff, #0056b3);
-            color: white;
-            padding: 14px 22px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0px 10px 15px rgba(0, 123, 255, 0.2);
-        }
-        button:hover {
-            background: linear-gradient(145deg, #0056b3, #003f80);
-            transform: translateY(-3px);
-        }
-        #result {
-            font-size: 1.1em;
-            color: #007bff;
-            margin-top: 20px;
-        }
-        #chart-container {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 15px;
-            background: #f8faff;
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.05);
-            width: 100%;
-        }
-        .download-btn {
-            margin-top: 20px;
-            padding: 12px;
-            background: linear-gradient(145deg, #007bff, #0056b3);
-            color: white;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            font-size: 0.95em;
-            box-shadow: 0px 8px 12px rgba(0, 123, 255, 0.2);
-        }
-        .download-btn:hover {
-            background: linear-gradient(145deg, #0056b3, #003f80);
-        }
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* Responsive style */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.8em;
-            }
-            input, button, .download-btn {
-                font-size: 0.9em;
-                padding: 10px;
-            }
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Calculatrice de fonction</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>Calculateur de Fonction</h1>
-        <div class="input-group">
-            <label for="x">Entrez la valeur de x :</label>
-            <input type="number" id="x" step="any" placeholder="Exemple : 5">
-        </div>
-        <div class="input-group">
-            <label for="operation">Opération à effectuer :</label>
-            <input type="text" id="operation" placeholder="Exemple : 4/x, 2*x, x+10">
-        </div>
-        <button onclick="calculate()">Calculer</button>
-        <p id="result"></p>
+    <form onsubmit="calculer(event)">
+        <label>Entrer un x :</label>
+        <input type="text" name="x" placeholder="Par exemple 3">
+        <label>Entrer une fonction :</label>
+        <input type="text" name="fx" placeholder="Par exemple x*2">
+        <input type="submit" value="Calculer">
+        <input type="button" value="Download" onclick="download()">
+    </form>
 
-        <div id="chart-container">
-            <canvas id="chart" style="max-height: 300px;"></canvas>
-            <button class="download-btn" onclick="downloadChart()">Télécharger le graphique</button>
-        </div>
-    </div>
+    <p id="reponse"></p>
 
-    <script>
-        let chartInstance;
+    <canvas id="chart"></canvas>
 
-        function calculate() {
-            const x = parseFloat(document.getElementById("x").value);
-            const operation = document.getElementById("operation").value;
-
-            if (isNaN(x) || !operation) {
-                document.getElementById("result").innerText = "Veuillez entrer une valeur pour x et une opération valide.";
-                return;
-            }
-
-            try {
-                const result = eval(operation.replace(/x/g, x));
-                document.getElementById("result").innerText = `Le résultat de l'opération ${operation} est : ${result}`;
-
-                const xValues = Array.from({length: 100}, (_, i) => i - 50);
-                const yValues = xValues.map(val => eval(operation.replace(/x/g, val)));
-
-                drawChart(xValues, yValues);
-            } catch (error) {
-                document.getElementById("result").innerText = error instanceof SyntaxError ?
-                    "Erreur : opération non valide." : "Erreur inconnue.";
-            }
-        }
-
-        function drawChart(xValues, yValues) {
-            const ctx = document.getElementById('chart').getContext('2d');
-
-            if (chartInstance) {
-                chartInstance.destroy();
-            }
-
-            chartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: xValues,
-                    datasets: [{
-                        label: 'y en fonction de x',
-                        data: yValues,
-                        borderColor: 'rgba(0, 123, 255, 1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: 'rgba(0, 123, 255, 0.6)',
-                        pointRadius: 3,
-                        fill: { target: 'origin', below: 'rgba(0, 123, 255, 0.1)' }
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 2,
-                    scales: {
-                        x: { title: { display: true, text: 'x' } },
-                        y: { title: { display: true, text: 'y' } }
-                    }
-                }
-            });
-        }
-
-        function downloadChart() {
-            const canvas = document.getElementById('chart');
-            const url = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'graphique.png';
-            link.click();
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
