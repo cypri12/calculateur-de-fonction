@@ -1,26 +1,52 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Calculatrice de fonction</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-</head>
-<body>
-    <form onsubmit="calculer(event)">
-        <label>Entrer un x :</label>
-        <input type="text" name="x" placeholder="Par exemple 3">
-        <label>Entrer une fonction :</label>
-        <input type="text" name="fx" placeholder="Par exemple x*2">
-        <input type="submit" value="Calculer">
-        <input type="button" value="Download" onclick="download()">
-    </form>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <title>Calculatrice de fonction</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <main class="app">
+            <header class="app__header">
+                <h1>Calculatrice de fonction</h1>
+                <p>Entrez une valeur de x et une expression pour visualiser f(x).</p>
+            </header>
 
-    <p id="reponse"></p>
+            <form class="calculator" onsubmit="calculer(event)">
+                <label class="calculator__label" for="input-x">Entrer un x</label>
+                <input
+                    id="input-x"
+                    name="x"
+                    type="number"
+                    step="any"
+                    placeholder="Par exemple 3"
+                    required
+                >
 
-    <canvas id="chart"></canvas>
+                <label class="calculator__label" for="input-fx">Entrer une fonction</label>
+                <input
+                    id="input-fx"
+                    name="fx"
+                    type="text"
+                    placeholder="Par exemple x*2"
+                    required
+                >
 
-    <script src="script.js"></script>
-</body>
+                <div class="calculator__actions">
+                    <button type="submit">Calculer</button>
+                    <button type="button" onclick="download()">Télécharger</button>
+                </div>
+            </form>
+
+            <p id="reponse" class="response" aria-live="polite"></p>
+
+            <section class="chart-card" aria-label="Graphique de la fonction">
+                <canvas id="chart"></canvas>
+            </section>
+        </main>
+
+        <script src="script.js"></script>
+    </body>
 </html>

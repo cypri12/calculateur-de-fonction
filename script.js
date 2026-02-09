@@ -1,35 +1,55 @@
+const responseElement = document.getElementById("reponse");
+const inputX = document.getElementById("input-x");
+const inputFx = document.getElementById("input-fx");
+
+function createFunction(expression) {
+    return new Function("x", `return ${expression}`);
+}
+
 function calculer(event) {
     event.preventDefault();
 
-    var x = parseFloat(document.getElementsByName("x")[0].value);
-    var fx = document.getElementsByName("fx")[0].value;
+    const xValue = Number.parseFloat(inputX.value);
+    const fxExpression = inputFx.value.trim();
 
-    if (isNaN(x)) {
-        alert("Veuillez entrer un nombre pour x.");
+    if (Number.isNaN(xValue)) {
+        responseElement.textContent = "Veuillez entrer un nombre pour x.";
+        return;
+    }
+
+    if (!fxExpression) {
+        responseElement.textContent = "Veuillez entrer une expression valide.";
         return;
     }
 
     try {
-        var result = eval(fx.replace(/x/g, x));
-        document.getElementById("reponse").innerText = "Le résultat est : " + result;
+        const fxFunction = createFunction(fxExpression);
+        const result = fxFunction(xValue);
 
-        updateChart(fx);
+        if (!Number.isFinite(result)) {
+            responseElement.textContent = "Le résultat est hors limites.";
+            return;
+        }
+
+        responseElement.textContent = `Le résultat est : ${result}`;
+        updateChart(fxFunction);
     } catch (error) {
-        alert("Erreur : veuillez entrer une expression valide.");
+        responseElement.textContent = "Erreur : veuillez entrer une expression valide.";
     }
 }
 
-function generateData(fx) {
-    let yValues = [];
-    for (let x = -5; x <= 5; x++) {
-        yValues.push(eval(fx.replace(/x/g, x)));
+function generateData(fxFunction) {
+    const yValues = [];
+    for (let x = -5; x <= 5; x += 1) {
+        const value = fxFunction(x);
+        yValues.push(Number.isFinite(value) ? value : null);
     }
     return yValues;
 }
 
-function updateChart(fx) {
-    const yValues = generateData(fx);
-    const xValues = Array.from({length: 11}, (_, i) => i - 5);
+function updateChart(fxFunction) {
+    const yValues = generateData(fxFunction);
+    const xValues = Array.from({ length: 11 }, (_, i) => i - 5);
 
     chart.data.labels = xValues;
     chart.data.datasets[0].data = yValues;
@@ -37,15 +57,13 @@ function updateChart(fx) {
 }
 
 function download() {
-    var a = document.createElement('a');
-    a.href = chart.toBase64Image();
-    a.download = 'f_de_x.png';
-
-    // Trigger the download
-    a.click();
+    const link = document.createElement("a");
+    link.href = chart.toBase64Image();
+    link.download = "f_de_x.png";
+    link.click();
 }
 
-const ctx = document.getElementById('chart').getContext('2d');
+const ctx = document.getElementById("chart").getContext("2d");
 const chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -53,18 +71,35 @@ const chart = new Chart(ctx, {
         datasets: [{
             label: 'Valeur de la fonction',
             data: [],
-            borderColor: 'rgb(255, 0, 0)',
-            backgroundColor: 'rgba(255, 0, 0, 0.2)',
-            tension: 0.4
+            borderColor: '#2f80ed',
+            backgroundColor: 'rgba(47, 128, 237, 0.2)',
+            tension: 0.35,
+            pointRadius: 3,
+            pointBackgroundColor: '#1c64d1'
         }]
     },
     options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
             y: {
-                beginAtZero: true
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(47, 128, 237, 0.08)'
+                }
             },
             x: {
-                beginAtZero: true
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(47, 128, 237, 0.08)'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#1e2a3a'
+                }
             }
         }
     }
